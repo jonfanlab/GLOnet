@@ -187,11 +187,10 @@ def train(models, optimizers, schedulers, eng, params):
                                        },
                                        checkpoint=model_dir)
 
-                #utils.movie_scatter(np.asarray(imgs_2),  np.asarray(Effs_2), params.output_dir)
                 io.savemat(params.output_dir+'/scatter.mat', mdict={'imgs_2': np.asarray(imgs_2), 'Effs_2': np.asarray(Effs_2)})
                 return 
 
-            # use solver and phyiscal gradient to update the GAN
+            # use solver and phyiscal gradient to update the Generator
             params.solver_batch_size = int(params.solver_batch_size_start +  (params.solver_batch_size_end - params.solver_batch_size_start) * (1 - (1 - normIter)**params.solver_batch_size_power))
             if params.noise_constant == 1:
                 z = (torch.ones(params.solver_batch_size, params.noise_dims).type(Tensor) * randconst) * params.noise_amplitude
@@ -214,29 +213,19 @@ def train(models, optimizers, schedulers, eng, params):
             grads = Grads_and_Effs[:, 1:]
             Efficiency_real = Grads_and_Effs[:, 0]
 
-            #Gradients = Tensor(grads).unsqueeze(1) * gen_imgs * 1e-3 * (1.0 - (Efficiency_real.view(-1, 1).unsqueeze(2) - 0.5)**2)
-            diversity_penalty = torch.mean(torch.std(gen_imgs, dim=0))
-
-            mu = torch.mean(Efficiency_real.view(-1))
-            sigma = torch.std(Efficiency_real.view(-1))
+         
             Eff_max = torch.max(Efficiency_real.view(-1))
-            #Gradients = Tensor(grads).unsqueeze(1) * gen_imgs * 1e-3 * (1.0 + (Efficiency_real.view(-1, 1).unsqueeze(2) - mu)/sigma)
             Eff_reshape = Efficiency_real.view(-1, 1).unsqueeze(2)
-            #Gradients = Tensor(grads).unsqueeze(1) * gen_imgs * 1e-3 * (- mu + 2 * Eff_reshape)
-
+            
             Gradients = Tensor(grads).unsqueeze(1) * gen_imgs * 1e-3 * (1./params.sigma * torch.exp((Eff_reshape - Eff_max)/params.sigma))
-            #Gradients = Tensor(grads).unsqueeze(1) * gen_imgs * 1e-3 * (1./params.sigma * torch.exp(-(Eff_reshape - Eff_max)**2/params.sigma**2) * 2* (Eff_max - Eff_reshape)/params.sigma)
-
-
+           
             # Train generator
             optimizer_G.zero_grad()
 
             #binary_penalty = params.binary_penalty_start +  (params.binary_penalty_end - params.binary_penalty_start) * (1 - (1 - normIter)**params.binary_penalty_power)
             binary_penalty = params.binary_penalty_start if params.iter < params.binary_step_iter else params.binary_penalty_end
             if params.binary == 1:
-                g_loss_solver = -torch.sum(torch.mean(Gradients, dim=0).view(-1)) - torch.mean(torch.abs(gen_imgs.view(-1)) * (2.0 - torch.abs(gen_imgs.view(-1)))) * binary_penalty 
-                #g_loss_solver = -torch.sum(torch.mean(Gradients, dim=0).view(-1)) - torch.mean(torch.pow(gen_imgs.view(-1), 2)) * binary_penalty
-            
+                g_loss_solver = -torch.sum(torch.mean(Gradients, dim=0).view(-1)) - torch.mean(torch.abs(gen_imgs.view(-1)) * (2.0 - torch.abs(gen_imgs.view(-1)))) * binary_penalty         
             else:
                 g_loss_solver = -torch.sum(torch.mean(Gradients, dim=0).view(-1))
 
