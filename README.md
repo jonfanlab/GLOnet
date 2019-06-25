@@ -31,7 +31,7 @@ or
 python main_single.py --output_dir results --w 900 --a 60
 ```
 
-to specify non-default output folder or training set
+to specify non-default output folder or parameters
 
 
 ## Results
