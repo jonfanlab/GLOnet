@@ -14,7 +14,7 @@ When you're done working on the project, deactivate the virtual environment with
 
 A matlab engine for python is needed for EM simulation. Please refer to [MathWorks Pages](https://www.mathworks.com/help/matlab/matlab_external/install-matlab-engine-api-for-python-in-nondefault-locations.html) for installation.
 
-Path of [RETICOLO](https://www.lp2n.institutoptique.fr/Membres-Services/Responsables-d-equipe/LALANNE-Philippe)should be added in the `main_single.py`
+Path of [RETICOLO](https://www.lp2n.institutoptique.fr/Membres-Services/Responsables-d-equipe/LALANNE-Philippe) should be added in the `main_single.py`
 
 ## Training the GLOnet
 
