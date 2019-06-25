@@ -36,9 +36,14 @@ to specify non-default output folder or parameters
 
 ## Results
 
-All results will store in output_dir/w<wavelength>a<angle> folder.
+All results will store in output_dir/w\<wavelength\>a\<angle\> folder.
+	
 	-figures/  (figures of generated devices and loss function curve and others for every 200 iterations)
+	
 	-model/    (all weights of the generator and discriminator)
+	
 	-outputs/  (500 generated devices for every combination of wavelength and angle in `.mat` format)
+	
 	-history.mat
+	
 	-train.log
