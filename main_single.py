@@ -3,8 +3,6 @@ import os
 import logging
 import argparse
 import numpy as np
-#import sys
-#sys.path.append('/home/users/jiangjq/.local/lib/python3.6/site-packages')
 from train_and_evaluate_single import evaluate, train
 from model.net_simple_single_device import Generator
 import utils
@@ -18,10 +16,6 @@ eng.addpath(eng.genpath('/home/users/jiangjq/Desktop/GAN1D_pytorch/solvers'));
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_dir', default='/scratch/users/jiangjq/GAN1D/GANoutputs/test/sweep8',
 										help="GAN-generated devices folder")
-parser.add_argument('--train_path', default='/scratch/users/jiangjq/GAN1D/TrainingSet/2D_train_eff70.mat',
-										help="The training dataset path")
-parser.add_argument('--model', default='shallow',
-										help="The training dataset path")
 parser.add_argument('--restore_from', default=None,
 										help="Optional, directory or file containing weights to reload before training")
 parser.add_argument('--wavelength', default=900)
@@ -61,7 +55,6 @@ if __name__ == '__main__':
 	params.gkernlen = int(params.gkernlen)
 	params.n_solver = int(params.n_solver)
 	params.n_solver_th = int(params.n_solver_th)
-	#params.solver_batch_size = int(params.solver_batch_size)
 	params.step_size = int(params.step_size)
 	
 	params.w = int(args.wavelength)
