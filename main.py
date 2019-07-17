@@ -10,11 +10,11 @@ import torch
 
 
 eng = matlab.engine.start_matlab()
-eng.addpath(eng.genpath('/home/users/jiangjq/Desktop/reticolo_allege'));
-eng.addpath(eng.genpath('/home/users/jiangjq/Desktop/GAN1D_pytorch/solvers'));
+eng.addpath(eng.genpath('/reticolo_allege'));
+eng.addpath(eng.genpath('solvers'));
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_dir', default='/scratch/users/jiangjq/GAN1D/GANoutputs/test/sweep8',
+parser.add_argument('--output_dir', default='Results',
 										help="GAN-generated devices folder")
 parser.add_argument('--restore_from', default=None,
 										help="Optional, directory or file containing weights to reload before training")
