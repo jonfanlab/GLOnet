@@ -207,7 +207,6 @@ def train(models, optimizers, schedulers, eng, params):
             wavelength = matlab.double([params.w] * params.solver_batch_size)
             desired_angle = matlab.double([params.a] * params.solver_batch_size)
       
-            #abseffs = eng.Eval_Eff_1D_parallel(img, wavelength, desired_angle)
             Grads_and_Effs = eng.GradientFromSolver_1D_parallel(img, wavelength, desired_angle)  
             Grads_and_Effs = Tensor(Grads_and_Effs)              
             grads = Grads_and_Effs[:, 1:]
@@ -222,7 +221,6 @@ def train(models, optimizers, schedulers, eng, params):
             # Train generator
             optimizer_G.zero_grad()
 
-            #binary_penalty = params.binary_penalty_start +  (params.binary_penalty_end - params.binary_penalty_start) * (1 - (1 - normIter)**params.binary_penalty_power)
             binary_penalty = params.binary_penalty_start if params.iter < params.binary_step_iter else params.binary_penalty_end
             if params.binary == 1:
                 g_loss_solver = -torch.sum(torch.mean(Gradients, dim=0).view(-1)) - torch.mean(torch.abs(gen_imgs.view(-1)) * (2.0 - torch.abs(gen_imgs.view(-1)))) * binary_penalty         
