@@ -14,10 +14,8 @@ eng.addpath(eng.genpath('/reticolo_allege'));
 eng.addpath(eng.genpath('solvers'));
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_dir', default='Results',
-										help="GAN-generated devices folder")
-parser.add_argument('--restore_from', default=None,
-										help="Optional, directory or file containing weights to reload before training")
+parser.add_argument('--output_dir', default='Results', help="Generated devices folder")
+parser.add_argument('--restore_from', default=None, help="Optional, directory or file containing weights to reload before training")
 parser.add_argument('--wavelength', default=900)
 parser.add_argument('--angle', default=60)
 
