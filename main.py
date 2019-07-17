@@ -3,7 +3,7 @@ import os
 import logging
 import argparse
 import numpy as np
-from train_and_evaluate_single import evaluate, train
+from train_and_evaluate import evaluate, train
 from model.net_simple_single_device import Generator
 import utils
 import torch
@@ -24,7 +24,6 @@ parser.add_argument('--angle', default=60)
 if __name__ == '__main__':
 	# Load the directory from commend line
 	args = parser.parse_args()
-	train_path = args.train_path
 	output_dir = args.output_dir + '/w{}a{}'.format(args.wavelength, args.angle)
 	restore_from = args.restore_from
 
