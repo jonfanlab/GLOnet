@@ -1,7 +1,7 @@
 {
-    "batch_size": 2048.0,
-    "noise_dims": 256.0,
-    "label_dims": 2.0, 
+    "batch_size": 2048,
+    "noise_dims": 256,
+    "label_dims": 2,
     "noise_constant": 0,
     "single_device": 0,
     "noise_distribution": "uniform",
