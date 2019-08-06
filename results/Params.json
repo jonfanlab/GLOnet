@@ -30,4 +30,4 @@
     "gamma": 1.0,
     "sigma": 0.2,
     "msg": " 1.1 enforce binary, multi-device, noise_varies, wspan 400, use train labels, new net leakyrelu, dropout"
-}   
+}

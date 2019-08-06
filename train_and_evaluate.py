@@ -14,7 +14,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 Tensor = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
-randconst = torch.rand(1).type(Tensor)*2-1
+randconst = torch.rand(1).type(Tensor) * 2 - 1
 
 
 def make_figure_dir(folder):
@@ -26,9 +26,9 @@ def make_figure_dir(folder):
 
 def PCA_model(data_path):
     pca = PCA(n_components=2, svd_solver='randomized')
-    dataset = io.loadmat(data_path, struct_as_record=False, squeeze_me=True)
-    data = dataset['data']
-    pca.fit(data)
+    # dataset = io.loadmat(data_path, struct_as_record=False, squeeze_me=True)
+    # data = dataset['data']
+    # pca.fit(data)
     return pca
 
 
@@ -47,10 +47,10 @@ def PCA_analysis(generator, pca, eng, params, numImgs=100):
     abseffs = eng.Eval_Eff_1D_parallel(img, wavelength, desired_angle)
     Efficiency = torch.Tensor([abseffs]).data.cpu().numpy().reshape(-1)
 
-   # img = img[np.where(Efficiency.reshape(-1) > 0), :]
-    #Efficiency = Efficiency[Efficiency > 0]
+    # img = img[np.where(Efficiency.reshape(-1) > 0), :]
+    # Efficiency = Efficiency[Efficiency > 0]
 
-    img_2 = pca.transform(img)
+    img_2 = pca.fit_transform(img)
 
     fig_path = params.output_dir + \
         '/figures/scatter/Iter{}.png'.format(params.iter)
@@ -66,13 +66,13 @@ def PCA_analysis(generator, pca, eng, params, numImgs=100):
     save_image(imgs, fig_path, 2)
 
     '''
-    grads = eng.GradientFromSolver_1D_parallel(img, wavelength, desired_angle) 
+    grads = eng.GradientFromSolver_1D_parallel(img, wavelength, desired_angle)
     grad_2 = pca.transform(grads)
     if params.iter % 2 == 0:
         utils.plot_envolution(params.img_2_prev, params.eff_prev, params.grad_2_prev, img_2, Efficiency, params.iter, params.output_dir)
     else:
         utils.plot_arrow(img_2, Efficiency, grad_2, params.iter, params.output_dir)
-    
+
     params.img_2_prev = img_2
     params.eff_prev = Efficiency
     params.grad_2_prev = grad_2
@@ -88,7 +88,7 @@ def sample_images(generator, batch_size, params):
     else:
         if params.noise_distribution == 'uniform':
             z = (torch.rand(batch_size, params.noise_dims).type(
-                Tensor)*2.-1.) * params.noise_amplitude
+                Tensor) * 2. - 1.) * params.noise_amplitude
         else:
             z = (torch.randn(batch_size, params.noise_dims).type(
                 Tensor)) * params.noise_amplitude
@@ -133,7 +133,7 @@ def train(models, optimizers, schedulers, eng, params):
 
     generator.train()
 
-    pca = PCA_model('/scratch/users/jiangjq/GAN1D/TrainingSet/PCA_data.mat')
+    pca = PCA_model(None)
 
     make_figure_dir(params.output_dir)
 
@@ -163,7 +163,7 @@ def train(models, optimizers, schedulers, eng, params):
 
             if it == 1:
                 model_dir = os.path.join(
-                    params.output_dir, 'model', 'iter{}'.format(it+iter0))
+                    params.output_dir, 'model', 'iter{}'.format(it + iter0))
                 os.makedirs(model_dir, exist_ok=True)
                 utils.save_checkpoint({'iter': it + iter0 - 1,
                                        'gen_state_dict': generator.state_dict(),
@@ -191,7 +191,7 @@ def train(models, optimizers, schedulers, eng, params):
                                        },
                                       checkpoint=model_dir)
 
-                io.savemat(params.output_dir+'/scatter.mat',
+                io.savemat(params.output_dir + '/scatter.mat',
                            mdict={'imgs_2': np.asarray(imgs_2), 'Effs_2': np.asarray(Effs_2)})
                 return
 
@@ -204,7 +204,7 @@ def train(models, optimizers, schedulers, eng, params):
             else:
                 if params.noise_distribution == 'uniform':
                     z = ((torch.rand(params.solver_batch_size, params.noise_dims).type(
-                        Tensor)*2.-1.) * params.noise_amplitude)
+                        Tensor) * 2. - 1.) * params.noise_amplitude)
                 else:
                     z = (torch.randn(params.solver_batch_size, params.noise_dims).type(
                         Tensor)) * params.noise_amplitude
@@ -227,7 +227,7 @@ def train(models, optimizers, schedulers, eng, params):
             Eff_reshape = Efficiency_real.view(-1, 1).unsqueeze(2)
 
             Gradients = Tensor(grads).unsqueeze(
-                1) * gen_imgs * 1e-3 * (1./params.sigma * torch.exp((Eff_reshape - Eff_max)/params.sigma))
+                1) * gen_imgs * 1e-3 * (1. / params.sigma * torch.exp((Eff_reshape - Eff_max) / params.sigma))
 
             # Train generator
             optimizer_G.zero_grad()
