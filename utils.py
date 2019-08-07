@@ -12,6 +12,8 @@ import pandas as pd
 import scipy.io as io
 import torch
 import numpy as np
+import random 
+
 
 class Params():
     """Class that loads hyperparameters from a json file.
@@ -103,7 +105,7 @@ def save_checkpoint(state, checkpoint):
         is_best: (bool) True if it is the best model seen till now
         checkpoint: (string) folder where parameters are to be saved
     """
-    filepath = os.path.join(checkpoint, 'model.pth.tar')
+    filepath = os.path.join(checkpoint, 'model.pth')
     if not os.path.exists(checkpoint):
         print("Checkpoint Directory does not exist! Making directory {}".format(checkpoint))
         os.mkdir(checkpoint)
@@ -124,11 +126,11 @@ def load_checkpoint(checkpoint, model, optimizer=None, scheduler=None):
     if not os.path.exists(checkpoint):
         raise("File doesn't exist {}".format(checkpoint))
     checkpoint = torch.load(checkpoint)
-
+    '''
     generator, discriminator = model
     generator.load_state_dict(checkpoint['gen_state_dict'])
     discriminator.load_state_dict(checkpoint['dis_state_dict'])
-
+    
     if optimizer:
         optim_G, optim_D = optimizer
         optim_G.load_state_dict(checkpoint['optim_G_state_dict'])
@@ -138,8 +140,11 @@ def load_checkpoint(checkpoint, model, optimizer=None, scheduler=None):
         scheduler_G, scheduler_D = scheduler
         scheduler_G.load_state_dict(checkpoint['scheduler_G_state_dict'])
         scheduler_D.load_state_dict(checkpoint['scheduler_D_state_dict'])
-
-
+    '''
+    model.load_state_dict(checkpoint['gen_state_dict'])
+    optimizer.load_state_dict(checkpoint['optim_G_state_dict'])
+    scheduler.load_state_dict(checkpoint['scheduler_G_state_dict'])
+    
     return checkpoint
 
 
@@ -340,4 +345,10 @@ def movie_scatter(imgs, Effs, output_dir):
             plt.clim(0, 1)
             writer.grab_frame()
 
-
+def random_num(min_number, max_number, num):
+    '''
+    Produce random numbers
+    Return a list
+    '''
+    result=random.sample(range(min_number,max_number),num)
+    return result

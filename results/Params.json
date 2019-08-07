@@ -1,12 +1,12 @@
 {
-    "batch_size": 2048,
-    "noise_dims": 256,
-    "label_dims": 2,
+    "batch_size": 2048.0,
+    "noise_dims": 256.0,
+    "label_dims": 2.0, 
     "noise_constant": 0,
     "single_device": 0,
     "noise_distribution": "uniform",
     "noise_amplitude": 30,
-    "numIter": 400.0,
+    "numIter": 400,
     "gkernlen": 19.0,
     "gkernsig": 6.0,
     "lr_gen": 5e-02,
@@ -18,6 +18,7 @@
     "use_Gauss": 1.0,
     "n_solver" : 1,
     "n_solver_th": 0,
+    "save_iter": 100, 
     "solver_batch_size_start": 500,
     "solver_batch_size_end": 20,
     "solver_batch_size_power": 5,
@@ -30,4 +31,4 @@
     "gamma": 1.0,
     "sigma": 0.2,
     "msg": " 1.1 enforce binary, multi-device, noise_varies, wspan 400, use train labels, new net leakyrelu, dropout"
-}
+}   
