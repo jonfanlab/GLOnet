@@ -1,6 +1,4 @@
 import matlab.engine
-import sys
-sys.path.append('../')
 import os
 import logging
 import argparse
@@ -13,8 +11,9 @@ import torch
 
 # start matlab engine
 eng = matlab.engine.start_matlab()
+# RCWA path
 eng.addpath(eng.genpath('/home/users/jiangjq/Desktop/reticolo_allege'));
-eng.addpath(eng.genpath('../solvers'));
+eng.addpath(eng.genpath('solvers'));
 
 
 # parser
