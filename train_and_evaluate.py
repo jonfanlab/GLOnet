@@ -70,8 +70,8 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
             scheduler.step()
 
             # binarization amplitude in the tanh function
-            if params.iter < 200:
-                params.binary_amp = int(params.iter/20) + 1 
+            if params.iter < 1000:
+                params.binary_amp = int(params.iter/100) + 1 
             else:
                 params.binary_amp = 10
 
