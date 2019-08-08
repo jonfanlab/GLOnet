@@ -1,7 +1,7 @@
 function [ abseff ] = Eval_Eff_1D( img, wavelength, angle)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
-try
+%try
 img = img/2.0 + 0.5;
 
 n_air = 1;
@@ -10,8 +10,7 @@ thickness  = 325;
 
 load('p_Si.mat')
 n_Si = interp1(WL, n, wavelength);
-clear k n WL
-
+clear k n WLc
 angle_theta0 = 0; % Incidence angle in degrees
 k_parallel = n_air*sin(angle_theta0*pi/180); % n_air, or whatever the refractive index of the medium where light is coming in.
 
@@ -46,8 +45,8 @@ theta_arr = one_D_TM.inc_bottom_transmitted.theta-angle ;
 idx = find(abs(theta_arr) == min(abs(theta_arr)));
 abseff = one_D_TM.inc_bottom_transmitted.efficiency(idx);
 
-catch
-	abseff = -1
-end
+%catch
+%	abseff = -1
+%end
 end
 

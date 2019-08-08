@@ -2,6 +2,7 @@ function [ Gr, effabs ] = GradientFromSolver_1D( img, wavelength, desired_angle)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes he
 
+
 img = img/2.0 + 0.5;
 
 min_feat = 50;
@@ -13,7 +14,7 @@ n_in = 1;
 load('p_Si.mat');
 n_Si = interp1(WL,n,wavelength);
 
-
+ 
 
 layers = 1;
 z_step = min(wavelength)/40; % z step for z discritization
