@@ -28,7 +28,7 @@ python main.py
 or 
 
 ```
-python main_single.py --output_dir results --wavelength 900 --angle 60
+python main.py --output_dir results --wavelength 900 --angle 60
 ```
 
 to specify non-default output folder or parameters
