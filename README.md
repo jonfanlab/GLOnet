@@ -22,13 +22,13 @@ You can change the parameters by editing `Params.json` in `results` folder.
 
 If you want to train the network, simply run
 ```
-python main_single.py 
+python main.py 
 ```
 
 or 
 
 ```
-python main_single.py --output_dir results --w 900 --a 60
+python main_single.py --output_dir results --wavelength 900 --angle 60
 ```
 
 to specify non-default output folder or parameters
