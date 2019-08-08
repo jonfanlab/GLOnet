@@ -19,7 +19,7 @@ eng.addpath(eng.genpath('solvers'));
 # parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_dir', default='results',
-                                        help="GAN-generated devices folder")
+                                        help="Results folder")
 parser.add_argument('--wavelength', default=None)
 parser.add_argument('--angle', default=None)
 parser.add_argument('--restore_from', default=None,
@@ -68,10 +68,10 @@ if __name__ == '__main__':
         generator.cuda()
 
 
-    # Define the optimizers 
+    # Define the optimizer
     optimizer = torch.optim.Adam(generator.parameters(), lr=params.lr, betas=(params.beta1, params.beta2))
     
-    # Define the schedulers
+    # Define the scheduler
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=params.step_size, gamma = params.gamma)
 
 
