@@ -137,29 +137,74 @@ def load_checkpoint(checkpoint, model, optimizer=None, scheduler=None):
 def plot_loss_history(loss_history, params):
     effs_mean_history, diversity_history, binarization_history = loss_history
     iterations = [i*params.plot_iter for i in range(len(effs_mean_history))]
-
     plt.figure()
     plt.plot(iterations, effs_mean_history)
     plt.plot(iterations, diversity_history)
     plt.plot(iterations, binarization_history)
     plt.xlabel('iteration')
     plt.legend(('Average Efficiency', 'Pattern diversity', 'Binarizaion'))
-    plt.axis([0, len(effs_mean_history), 0, 1.05])
+    plt.axis([0, len(effs_mean_history)*params.plot_iter, 0, 1.05])
     plt.savefig(params.output_dir + '/figures/Train_history.png')
-    plt.close()
 
     history_path = os.path.join(params.output_dir,'history.mat')
     io.savemat(history_path, mdict={'effs_mean_history':np.asarray(effs_mean_history), 
                                     'diversity_history':np.asarray(diversity_history),
                                     'binarization_history'  :np.asarray(binarization_history)})
- 
+         
+def plot_scatter(imgs, Effs, Iter, fig_path):
+    fig = plt.figure()
+    plt.scatter(imgs[:, 0], imgs[:, 1], c = Effs*100, cmap=plt.cm.rainbow, vmin=0, vmax=100)
+    cb = plt.colorbar()
+    cb.ax.tick_params(labelsize=12)
+    plt.clim(0, 100)
+    plt.xlim(-10, 10)
+    plt.ylim(-10, 10)
+    plt.yticks([])
+    plt.xticks([])    
+    #plt.xticks(fontsize=20)
+    #plt.yticks(fontsize=20)
+    plt.title('Iteration {}'.format(Iter), fontsize=16)
+    plt.savefig(fig_path, dpi=300)
+    plt.close()
+
+
+def plot_scatter_and_histogram(imgs, Effs, Iter, fig_path):
+    plt.figure(figsize=(8, 4))
+    gs = gridspec.GridSpec(1, 2, width_ratios=[1.2, 1]) 
+    plt.suptitle('Iteration {}'.format(Iter), fontsize=16)
+
+    plt.subplot(gs[0])
+    plt.scatter(imgs[:, 0], imgs[:, 1], c = Effs*100, cmap=plt.cm.rainbow, vmin=0, vmax=100)
+    cb = plt.colorbar()
+    cb.ax.tick_params(labelsize=12)
+    plt.clim(0, 100)
+    plt.xlim(-10, 5)
+    plt.ylim(0, 10)
+    plt.yticks([])
+    plt.xticks([])    
+    #plt.xticks(fontsize=20)
+    #plt.yticks(fontsize=20)
+
+    plt.subplot(gs[1])
+    bins = [i*5 for i in range(21)]
+    plt.hist(Effs*100, bins, facecolor='blue', alpha=0.5)
+    plt.xlim(0, 100)
+    plt.ylim(0, 50)
+    plt.yticks([])
+    #plt.xticks(fontsize=20)
+    plt.xticks(fontsize=12)
+    plt.xlabel('Deflection efficiency (%)', fontsize=12)
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.88)
+    plt.savefig(fig_path, dpi=300)
+    plt.close()
 
 def plot_histogram(Effs, Iter, fig_path):
     ax = plt.figure()
     bins = [i*5 for i in range(21)]
     plt.hist(Effs*100, bins, facecolor='blue', alpha=0.5)
     plt.xlim(0, 100)
-    plt.ylim(0, 100)
+    plt.ylim(0, 50)
     plt.yticks([])
     plt.xticks(fontsize=12)
     #plt.yticks(fontsize=20)
@@ -167,5 +212,66 @@ def plot_histogram(Effs, Iter, fig_path):
     plt.title('Iteration {}'.format(Iter), fontsize=16)
     plt.savefig(fig_path, dpi=300)
     plt.close()
+
+
+def plot_arrow(imgs, Effs, grads, Iter, fig_path):
+    ax = plt.figure()
+    plt.scatter(imgs[:, 0], imgs[:, 1], c = Effs*100, cmap=plt.cm.rainbow, vmin=0, vmax=100)
+    plt.colorbar()
+    plt.clim(0, 100)
+    plt.quiver(imgs[:, 0], imgs[:, 1], grads[:, 0], grads[:, 1])
+    #plt.xlim(-11, -3)
+    #plt.ylim(2, 8)
+    #plt.xticks(fontsize=20)
+    #plt.yticks(fontsize=20)
+    #plt.title('Iteration {}'.format(Iter), fontsize=20)
+    plt.yticks([])
+    plt.xticks([])    
+    plt.savefig(fig_path, dpi=300)
+    plt.close()
+
+def plot_envolution(imgs_prev, Effs_prev, grads_prev, imgs, Effs, Iter, fig_path):
+    ax = plt.figure(figsize=(3, 3))
+
+    Effs_prev = np.ones_like(Effs_prev)*0.2
+    Effs = np.ones_like(Effs)
+    plt.scatter(imgs_prev[:, 0], imgs_prev[:, 1], c = Effs_prev, cmap=plt.cm.rainbow, vmin=0, vmax=1)
+    plt.scatter(imgs[:, 0], imgs[:, 1], c = Effs, cmap=plt.cm.rainbow, vmin=0, vmax=1)
+    plt.quiver(imgs_prev[:, 0], imgs_prev[:, 1], grads_prev[:, 0], grads_prev[:, 1])
+    #plt.colorbar()
+    #plt.clim(0, 1)
+    #plt.xlim(-11, -3)
+    #plt.ylim(2, 8)
+    #plt.xticks(fontsize=20)
+    #plt.yticks(fontsize=20)
+    #plt.title('Iteration {}'.format(Iter), fontsize=20)
+    plt.yticks([])
+    plt.xticks([])    
+    plt.savefig(fig_path, dpi=300)
+    plt.close()
+
+
+
+def movie_scatter(imgs, Effs, output_dir):
+
+    FFMpegWriter = animation.writers['ffmpeg']
+    metadata = dict(title='scatter', artist='Matplotlib',
+                    comment='Movie support!')
+    writer = FFMpegWriter(fps=5, metadata=metadata)
+
+    fig = plt.figure()
+    numFrame = imgs.shape[0]
+    filepath = output_dir + '/scatter.avi'
+
+    with writer.saving(fig, filepath, numFrame):
+        for i in range(numFrame):
+            plt.cla()
+            plt.scatter(imgs[i, :, 0], imgs[i, :, 1], c = Effs[i, :], cmap=plt.cm.plasma)
+            plt.title('Iter {}'.format(i*100+100))
+            plt.xlim(-15, 15)
+            plt.ylim(-15, 15)
+            plt.colorbar()
+            plt.clim(0, 1)
+            writer.grab_frame()
 
 
