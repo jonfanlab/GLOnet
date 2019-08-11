@@ -14,7 +14,6 @@ class Generator(nn.Module):
         super().__init__()
 
         self.noise_dim = params.noise_dims
-        self.label_dim = params.label_dims
 
         self.gkernel = gkern1D(params.gkernlen, params.gkernsig)
 
