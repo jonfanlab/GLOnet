@@ -44,7 +44,6 @@ if __name__ == '__main__':
     params.restore_from = args.restore_from
     params.numIter = int(params.numIter)
     params.noise_dims = int(params.noise_dims)
-    params.label_dims = int(params.label_dims)
     params.gkernlen = int(params.gkernlen)
     params.step_size = int(params.step_size)    
 
