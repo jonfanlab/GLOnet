@@ -87,7 +87,7 @@ if __name__ == '__main__':
 
     # Generate images and save 
     logging.info('Start generating devices')
-    evaluate(generator, eng, num_imgs=500, params=params)
+    evaluate(generator, eng, num_Imgs=500, params=params)
 
 
 
