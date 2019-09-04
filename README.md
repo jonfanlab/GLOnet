@@ -38,11 +38,11 @@ to specify non-default output folder or parameters
 
 All results will store in output_dir/w\<wavelength\>a\<angle\> folder.
 	
-	-figures/  (figures of generated devices and loss function curve and others for every 200 iterations)
+	-figures/  (figures of generated devices and loss function curve)
 	
 	-model/    (all weights of the generator and discriminator)
 	
-	-outputs/  (500 generated devices for every combination of wavelength and angle in `.mat` format)
+	-outputs/  (500 generated devices in `.mat` format)
 	
 	-history.mat
 	
