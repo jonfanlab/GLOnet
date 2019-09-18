@@ -45,13 +45,11 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
 
     # initialization
     if params.restore_from is None:
-        effs_90th_history = [] 
         effs_mean_history = []
         binarization_history = []
         diversity_history = []
         iter0 = 0   
     else:
-        effs_90th_history = params.checkpoint['effs_90th_history']
         effs_mean_history = params.checkpoint['effs_mean_history']
         binarization_history = params.checkpoint['binarization_history']
         diversity_history = params.checkpoint['diversity_history']
@@ -92,7 +90,6 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
                                        'gen_state_dict': generator.state_dict(),
                                        'optim_state_dict': optimizer.state_dict(),
                                        'scheduler_state_dict': scheduler.state_dict(),
-                                       'effs_90th_history': effs_90th_history,
                                        'effs_mean_history': effs_mean_history,
                                        'binarization_history': binarization_history,
                                        'diversity_history': diversity_history
@@ -134,16 +131,15 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
                 visualize_generated_images(generator, params)
 
                 # evaluate the performance of current generator
-                effs_90th, effs_mean, binarization, diversity = evaluate_training_generator(generator, eng, params)
+                effs_mean, binarization, diversity = evaluate_training_generator(generator, eng, params)
 
                 # add to history 
-                effs_90th_history.append(effs_90th)
                 effs_mean_history.append(effs_mean)
                 binarization_history.append(binarization)
                 diversity_history.append(diversity)
 
                 # plot current history
-                utils.plot_loss_history((effs_90th_history, effs_mean_history, diversity_history, binarization_history), params)
+                utils.plot_loss_history((effs_mean_history, diversity_history, binarization_history), params)
                 generator.train()
 
             t.update()
@@ -254,7 +250,6 @@ def evaluate_training_generator(generator, eng, params, num_imgs = 100):
     # efficiencies of generated images
     effs = compute_effs(imgs, eng, params)
     effs_mean = torch.mean(effs.view(-1))
-    effs_90th = np.percentile(effs.cpu().detach().numpy(), 90)
 
     # binarization of generated images
     binarization = torch.mean(torch.abs(imgs.view(-1))).cpu().detach().numpy()
@@ -267,5 +262,5 @@ def evaluate_training_generator(generator, eng, params, num_imgs = 100):
     utils.plot_histogram(effs.data.cpu().numpy().reshape(-1), params.iter, fig_path)
 
     
-    return effs_90th, effs_mean, binarization, diversity
+    return effs_mean, binarization, diversity
 
