@@ -22,14 +22,15 @@ def evaluate(generator, eng, numImgs, params):
     images = generator(z, params)
     logging.info('Generation is done. \n')
 
-    # save images
-    filename = 'imgs_w' + str(params.wc) +'_a' + str(params.ac) +'deg.mat'
-    file_path = os.path.join(params.output_dir,'outputs',filename)
-    io.savemat(file_path, mdict={'imgs': images.cpu().detach().numpy(), 'effs' : effs})
-
     # evaluate efficiencies
     images = torch.sign(images)
     effs = compute_effs(images, eng, params)
+
+    # save images
+    filename = 'imgs_w' + str(params.wavelength) +'_a' + str(params.angle) +'deg.mat'
+    file_path = os.path.join(params.output_dir,'outputs',filename)
+    io.savemat(file_path, mdict={'imgs': images.cpu().detach().numpy(), 
+                                 'effs': effs.cpu().detach().numpy()})
 
     # plot histogram
     fig_path = params.output_dir + '/figures/Efficiency.png'
@@ -44,11 +45,13 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
 
     # initialization
     if params.restore_from is None:
+        effs_90th_history = [] 
         effs_mean_history = []
         binarization_history = []
         diversity_history = []
         iter0 = 0   
     else:
+        effs_90th_history = params.checkpoint['effs_90th_history']
         effs_mean_history = params.checkpoint['effs_mean_history']
         binarization_history = params.checkpoint['binarization_history']
         diversity_history = params.checkpoint['diversity_history']
@@ -67,6 +70,12 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
 
             # specify current batch size 
             params.batch_size = int(params.batch_size_start +  (params.batch_size_end - params.batch_size_start) * (1 - (1 - normIter)**params.batch_size_power))
+            
+            # sigma decay
+
+            params.sigma = params.sigma_start + (params.sigma_end - params.sigma_start) * normIter
+
+            # learning rate decay
             scheduler.step()
 
             # binarization amplitude in the tanh function
@@ -83,6 +92,7 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
                                        'gen_state_dict': generator.state_dict(),
                                        'optim_state_dict': optimizer.state_dict(),
                                        'scheduler_state_dict': scheduler.state_dict(),
+                                       'effs_90th_history': effs_90th_history,
                                        'effs_mean_history': effs_mean_history,
                                        'binarization_history': binarization_history,
                                        'diversity_history': diversity_history
@@ -124,15 +134,16 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
                 visualize_generated_images(generator, params)
 
                 # evaluate the performance of current generator
-                effs_mean, binarization, diversity = evaluate_training_generator(generator, eng, params)
+                effs_90th, effs_mean, binarization, diversity = evaluate_training_generator(generator, eng, params)
 
                 # add to history 
+                effs_90th_history.append(effs_90th)
                 effs_mean_history.append(effs_mean)
                 binarization_history.append(binarization)
                 diversity_history.append(diversity)
 
                 # plot current history
-                utils.plot_loss_history((effs_mean_history, diversity_history, binarization_history), params)
+                utils.plot_loss_history((effs_90th_history, effs_mean_history, diversity_history, binarization_history), params)
                 generator.train()
 
             t.update()
@@ -225,7 +236,7 @@ def global_loss_function(gen_imgs, effs, gradients, sigma=0.5, binary_penalty=0)
 
 def visualize_generated_images(generator, params, n_row = 4, n_col = 4):
     # generate images and save
-    fig_path = params.output_dir +  '/figures/w{}a{}/deviceSamples/Iter{}.png'.format(params.wavelength, params.angle, params.iter) 
+    fig_path = params.output_dir +  '/figures/deviceSamples/Iter{}.png'.format(params.iter) 
     
     z = sample_z(n_col * n_row, params)
     imgs = generator(z, params)
@@ -243,17 +254,18 @@ def evaluate_training_generator(generator, eng, params, num_imgs = 100):
     # efficiencies of generated images
     effs = compute_effs(imgs, eng, params)
     effs_mean = torch.mean(effs.view(-1))
+    effs_90th = np.percentile(effs.cpu().detach().numpy(), 90)
 
     # binarization of generated images
-    binarization = torch.mean(torch.abs(imgs.view(-1)))
+    binarization = torch.mean(torch.abs(imgs.view(-1))).cpu().detach().numpy()
 
     # diversity of generated images
-    diversity = torch.mean(torch.std(imgs, dim=0))
+    diversity = torch.mean(torch.std(imgs, dim=0)).cpu().detach().numpy()
 
     # plot histogram
-    fig_path = params.output_dir +  '/figures/w{}a{}/histogram/Iter{}.png'.format(params.wavelength, params.angle, params.iter) 
+    fig_path = params.output_dir +  '/figures/histogram/Iter{}.png'.format(params.iter) 
     utils.plot_histogram(effs.data.cpu().numpy().reshape(-1), params.iter, fig_path)
 
     
-    return effs_mean, binarization, diversity
+    return effs_90th, effs_mean, binarization, diversity
 
