@@ -47,3 +47,13 @@ All results will store in output_dir/w\<wavelength\>a\<angle\> folder.
 	-history.mat
 	
 	-train.log
+
+## Citation
+If you use this code for your research, please cite:
+
+[Simulator-based training of generative models for the inverse design of metasurfaces.<br>](https://arxiv.org/abs/1906.07843)
+Jiaqi Jiang, Jonathan A. Fan 
+
+[Global Optimization of Dielectric Metasurfaces Using a Physics-Driven Neural Network.<br>](https://pubs.acs.org/doi/abs/10.1021/acs.nanolett.9b01857)
+Jiaqi Jiang, Jonathan A. Fan
+
