@@ -70,7 +70,6 @@ def train(generator, optimizer, scheduler, eng, params, pca=None):
             params.batch_size = int(params.batch_size_start +  (params.batch_size_end - params.batch_size_start) * (1 - (1 - normIter)**params.batch_size_power))
             
             # sigma decay
-
             params.sigma = params.sigma_start + (params.sigma_end - params.sigma_start) * normIter
 
             # learning rate decay
