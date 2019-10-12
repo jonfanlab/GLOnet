@@ -36,7 +36,7 @@ to specify non-default output folder or parameters
 
 ## Results
 
-All results will store in output_dir/w\<wavelength\>a\<angle\> folder.
+All results will store in output_dir/ folder.
 	
 	-figures/  (figures of generated devices and loss function curve)
 	
