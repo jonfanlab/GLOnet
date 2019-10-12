@@ -3,7 +3,7 @@
     "angle": 60,
     "noise_dims": 256.0,
     "noise_amplitude": 1,
-    "numIter": 1200.0,
+    "numIter": 1000.0,
     "gkernlen": 19.0,
     "gkernsig": 6.0,
     "lr": 1e-03,
@@ -16,10 +16,10 @@
     "binary_penalty_start": 0,
     "binary_penalty_end": 100,
     "binary_penalty_power": 4,
-    "binary_step_iter": 500,
+    "binary_step_iter": 400,
     "step_size": 5000000,
     "gamma": 1.0,
-    "sigma_start": 0.5,
-    "sigma_end": 0.5,
+    "sigma_start": 0.7,
+    "sigma_end": 0.7,
     "plot_iter": 50
 }   
