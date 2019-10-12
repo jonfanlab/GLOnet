@@ -19,6 +19,7 @@
     "binary_step_iter": 500,
     "step_size": 5000000,
     "gamma": 1.0,
-    "sigma": 0.5,
+    "sigma_start": 0.5,
+    "sigma_end": 0.5,
     "plot_iter": 50
 }   
