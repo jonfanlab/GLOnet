@@ -56,8 +56,8 @@ if __name__ == '__main__':
     # make directory
     os.makedirs(args.output_dir + '/outputs', exist_ok = True)
     os.makedirs(args.output_dir + '/model', exist_ok = True)
-    os.makedirs(args.output_dir + '/figures/w{}a{}/histogram'.format(params.wavelength, params.angle), exist_ok = True)
-    os.makedirs(args.output_dir + '/figures/w{}a{}/deviceSamples'.format(params.wavelength, params.angle), exist_ok = True)
+    os.makedirs(args.output_dir + '/figures/histogram', exist_ok = True)
+    os.makedirs(args.output_dir + '/figures/deviceSamples', exist_ok = True)
 
     # Define the models 
     generator = Generator(params)
