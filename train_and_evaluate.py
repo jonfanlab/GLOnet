@@ -152,7 +152,7 @@ def sample_z(batch_size, params):
     return (torch.rand(batch_size, params.noise_dims).type(Tensor)*2.-1.) * params.noise_amplitude
 
 
-def compute_effs_and_gradients(imgs, eng, params):
+def compute_effs_and_gradients(gen_imgs, eng, params):
     '''
     Args:
         imgs: N x C x H
@@ -165,8 +165,9 @@ def compute_effs_and_gradients(imgs, eng, params):
         gradients: N x C x H
     '''
     # convert from tensor to numpy array
+    imgs = gen_imgs.clone().detach()
     N = imgs.size(0)
-    img = matlab.double(imgs.data.cpu().numpy().tolist())
+    img = matlab.double(imgs.cpu().numpy().tolist())
     wavelength = matlab.double([params.wavelength] * N)
     desired_angle = matlab.double([params.angle] * N)
 
