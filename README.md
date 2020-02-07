@@ -40,7 +40,7 @@ All results will store in output_dir/ folder.
 	
 	-figures/  (figures of generated devices and loss function curve)
 	
-	-model/    (all weights of the generator and discriminator)
+	-model/    (all weights of the generator)
 	
 	-outputs/  (500 generated devices in `.mat` format)
 	
