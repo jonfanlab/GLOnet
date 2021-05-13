@@ -22,8 +22,6 @@ z_step = min(wavelength)/40; % z step for z discritization
 thickness = 325;
 incident_angle = 0;
 desired_angle = desired_angle; % deg, in air
-min_feat = 60;
-topvar = 1;
 
 pol = {'TM'};
 period = wavelength/(sind(desired_angle));
@@ -100,7 +98,7 @@ elseif strcmp(pol,'TM')
     gr0all = real(1i*(EEpar+EEnorm));
 end
 
-grall = mean(gr0all, 1);
+grall = mean(gr0all, 1).*nvec;
 grtot = grall;
 grtot(1:round(min_feat/2)) = 0;
 grtot((nlength-round(min_feat/2)):nlength) = 0;
