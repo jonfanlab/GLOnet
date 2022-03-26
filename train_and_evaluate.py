@@ -237,7 +237,7 @@ def visualize_generated_images(generator, params, n_row = 4, n_col = 4):
     z = sample_z(n_col * n_row, params)
     imgs = generator(z, params)
     imgs_2D = imgs.unsqueeze(2).repeat(1, 1, 64, 1)
-    save_image(imgs_2D, fig_path, n_row, range=(-1, 1))
+    save_image(imgs_2D, fig_path, n_row=n_row, range=(-1, 1))
     
 
 
