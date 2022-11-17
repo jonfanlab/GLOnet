@@ -10,11 +10,11 @@ thickness  = 325;
 
 load('p_Si.mat')
 n_Si = interp1(WL, n, wavelength);
-clear k n WLc
+clear k n WL
 angle_theta0 = 0; % Incidence angle in degrees
 k_parallel = n_air*sin(angle_theta0*pi/180); % n_air, or whatever the refractive index of the medium where light is coming in.
 
-parm = res0(-1); % TE polarization. For TM : parm=res0(-1)
+parm = res0(-1); % TM polarization. For TE : parm=res0(1)
 parm.res1.champ = 1; % the electromagnetic field is calculated accurately
 %parm.res1.trace = 1; % show the texture
 
